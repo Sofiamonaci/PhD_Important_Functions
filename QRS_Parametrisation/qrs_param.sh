@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-INIT="/home/sm18/bin/generate_init.py"
-FUNCTIONS="/home/sm18/bin/functions.py"
+INIT="./generate_init.py"
+FUNCTIONS="./functions.py"
 
 
 #########################################################################
