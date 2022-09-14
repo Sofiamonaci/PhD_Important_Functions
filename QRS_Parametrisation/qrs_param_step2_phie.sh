@@ -3,11 +3,13 @@
 ## To run this second part, make sure you have all files and folder necessary for phie_recovery + eikonal simulations !!!
 # And remember to adjust resolution an ECGm (measured ECG file of interest)
 
-INIT="/home/sm18/bin/generate_init.py"
-FUNCTIONS="/home/sm18/bin/functions.py"
+INIT="./generate_init.py"
+FUNCTIONS="./functions.py"
+PARAM_PY="./generate_param.py"
+COMPUTE_QRS_d="./qrs_correlation.py"
+
+# ENTER PATH of TUNECV
 TuneCV="/home/sm18/Software/CARP/carputils/bin/tuneCV"
-PARAM_PY="/home/sm18/bin/generate_param.py"
-COMPUTE_QRS_d="/home/sm18/bin/QRS_correlation.py"
 
 #########################################################################
 # Help                                                                  #
