@@ -280,16 +280,6 @@ class Scar:
 	res = np.unique(dat)
 	res = res[1] - res[0]
 
-#	if min(dat[ind_dead1])>= min(dat[ind_dead2]):
-#		l = min(dat[ind_dead1])
-#	else:
-#		l = min(dat[ind_dead2])
-
-#	if max(dat[ind_dead1])>= max(dat[ind_dead2]):
-#                u = max(dat[ind_dead2])
-#        else:
-#                u = max(dat[ind_dead1])
-
 	dat = dat[plane_ind]
 	ind = np.where((dat>=l)*(dat<=u))[0]
 
@@ -324,27 +314,6 @@ class Scar:
 
 	return channel, plane_ind[ind[ind_channel]], exit_ind, entrance_ind
 
-###################################################################################################################
-############################################### OLD CODE ###########################################################
-
-#	ind_channel = np.where((dat>=l)*(dat<=u))[0]
-#	channel = pts[ind_channel,:]
-
-#        d = np.linalg.norm(channel - self.c_xyz, axis=1)/1000
-
-#	r = param[0]/2
-#        r = np.sqrt((param[1]/2)**2+(param[0]/2)**2)
-        # Consider transmurality
-
-#        if self.c_uvc[2]==0:
-#            channel = channel[(d<=r)*(uvc[ind_channel,2]<=param[2]),:]
-#            ind_channel = ind_channel[(d<=r)*(uvc[ind_channel,2]<=param[2])]
-#        else:
-#            channel = channel[(d<=r)*(uvc[ind_channel,2]>=(1-param[2])),:]
-#            ind_channel = ind_channel[(d<=r)*(uvc[ind_channel,2]>=(1-param[2]))]
-###################################################################################################################
-
- #       return channel,ind_channel
 
 # COMPUTING DEAD TISSUES CENTROIDS ACCORDING TO DESIRED WIDTH OF ISTHMUS
     def centroid_deadtissue(self,pts,z,rho,width):
