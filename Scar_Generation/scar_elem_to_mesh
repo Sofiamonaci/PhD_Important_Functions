@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+
+import os
+import numpy as np
+import pandas as pd
+import argparse
+import sys
+
+from ScarGenerator import interpolate_node2elem
+from Choose_stimuli import choose_stimuli
+############################ MAIN FUNCTION TO CREATE MYO MESHES WITH SCAR INFO #########################
+########################################################################################################
+########################################################################################################
+
+
+def main(args):
+
+    print('Reading %s.elem ...' % (args.mesh))
+    df_elem = pd.read_csv(args.mesh+'.elem', delimiter=' ', header=None, skiprows=1, usecols=[1,2,3,4,5])
+    elem = df_elem.values
+
+    print('Reading %s.lon ...' % (args.mesh))
+    df_lon = pd.read_csv(args.mesh+'.lon', delimiter=' ', header=None, skiprows=1)
+    lon = df_lon.values
+
+    # Interpolating nodal info onto elements if element file does not exist
+    if not os.path.exists(args.edat+".dat"):
+        print('Intepolating nodal data into elements (file non existing) ')
+        n_elems = int(pd.read_csv(args.mesh+'.elem',nrows=0).columns.values)
+	n_dat = pd.read_csv(args.edat[:-5]+'.dat', delimiter=' ', header=None).values.flatten()
+        edat = interpolate_node2elem(args.mesh,n_dat,n_elems,args.edat[:-5])
+    else:
+    	print('Reading %s.dat ...' % (args.edat))
+    	df_edat = pd.read_csv(args.edat+'.dat', delimiter=' ', header=None)
+    	edat = df_edat.values[:,0]
+
+    # Choose tags according to torso (to avoid changing them later)
+    # Isthmus
+    elem[edat!=0, -1] = args.value + 1
+     # Dead tissue
+    elem[edat == 1, -1] = args.value
+
+    # If isthmus and entrances have been tagged already
+    if np.any(edat==3):
+        elem[edat == 3, -1] = args.value + 2
+        elem[edat == 4, -1] = args.value + 3
+	if np.any(edat>=5):
+		elem[edat == 5, -1] = args.value + 4
+        	elem[edat == 6, -1] = args.value + 5
+
+
+    if not os.path.exists(args.edat[:-5] + '_myo.elem'):
+    	print('Writing ' + args.edat[:-5] + '_myo.elem')
+    	with open(args.edat[:-5] + '_myo.elem', 'w+') as f:
+        	f.write('%d\n' % (elem.shape[0]))
+        	for i in range(elem.shape[0]):
+	            	f.write('Tt %d %d %d %d %d\n' % (elem[i, 0], elem[i, 1], elem[i, 2], elem[i, 3], elem[i, 4]))
+    	
+	# Change lon to consider dead tissue
+    	lon[elem[:, -1] == args.value, :] = 0
+    	print('Writing ' + args.edat[:-5] + '_myo.lon')
+    	with open(args.edat[:-5] + '_myo.lon', 'w+') as f:
+        	f.write('1\n')
+        	np.savetxt(f, lon, delimiter=' ')
+    	# Copy pts file, nod file and eidx for the generation of the torso
+    	os.system("cp " + args.mesh + ".pts " + args.edat[:-5] + "_myo.pts")
+    	os.system("cp " + args.mesh + ".nod " + args.edat[:-5] + "_myo.nod")
+    	os.system("cp " + args.mesh + ".eidx " + args.edat[:-5] + "_myo.eidx")
+
+
+    print('Finding exit/entrance stimuli and printing corresponding files ...\n')
+    choose_stimuli(args.mesh+'.pts',args.rho,args.rho[:-7] + 'V.dat',elem,out = args.out,flag=args.edat,value=27)
+
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.formatter_class = argparse.ArgumentDefaultsHelpFormatter
+    parser.add_argument('--mesh', type=str, default="/home/sm18/syncdir/CT_data/Torso-Female-Segmentation/myo_final", help='Path to mesh points/elem')
+    parser.add_argument('--rho', type=str, default="/media/sm18/Seagate Backup Plus Drive/PhD/Scripts/UVC/torso_female_uvc/UVC/COORDS_RHO.dat", help='Filepath to rho coordinate')
+    parser.add_argument('--out', type=str, default="./", help='Output path of init files')
+    parser.add_argument('--edat', type=str, default="./Scar_Generation/Epicardial_scar_1_elem", help='Element file (without .dat expansion) where info about scar is stored')
+    parser.add_argument('--value', type=int, default=19, help='Value to assign to dead tissue according to torso tags (e.g. 19 for Female, 20 for Male)')
+    args = parser.parse_args()
+
+    main(args)
