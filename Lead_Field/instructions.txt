@@ -18,6 +18,25 @@ Step 1. and 2. can be run in any order as indepedent of one another. Step 3. nee
 
 For LF-RE environment in general
 
-1. Run lead_field.pbs after changing LF_electrodes.vtx according to points of interest, lead_field.par according to tags of cardiac and torso meshes (and also make sure that you change
+1. Run lead_field.pbs 
+after changing LF_electrodes.vtx according to points of interest, lead_field.par according to tags of cardiac and torso meshes (and also make sure that you change
 - name of MESH in lead_field.pbs
-- 
+
+LF_electrodes.vtx needs to have following format
+
+------------------------------------------------------------------
+
+$NUMBER_OF_TOTAL_ELECTRODES # mesh extra $MESH_ELEMS $MESH_NODES
+$INDEX_ELECTRODE1
+...
+$INDEX_ELECTRODEN
+$INDEX_REFERENCE
+
+-------------------------------------------------------------------
+
+NUMBER_OF_TOTAL_ELECTRODES = NUMBER_OF_LEAD_FIELDS + REFERENCE
+
+The file needs to end with the index of the reference file so that ./pipeline_jobs.sh can pass it into lead_field.pbs automatically (if not interested, you can provide INDEX_REFERENCE directly in lead_field.pbs by changing $REF
+
+2. Run run_LF_RE.pbs
+after changing parameters of simulation accordingly 
