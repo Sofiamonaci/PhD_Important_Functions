@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#SBATCH -p compute
+#SBATCH -J LF_RE+
+#SBATCH -t 0-10:00:00
+#SBATCH --nodes=8
+#SBATCH --ntasks-per-node=64
+#SBATCH --output=VT_%a.out
+#SBATCH --error=VT_%a.err
+#SBATCH --array=[1-2]%1
+
+source ${HOME}/.bashrc
+export OMP_NUM_THREADS=1
+
+OPTS="/home/sm18/NumComp/solver_opts"
+PARA="eikonal"
+OUT="/scratch/sm18/Scar"
+DT="125"
+REF=$1
+MESH="myo_scar"
+
+INDEX=$SLURM_ARRAY_TASK_ID
+
+if [ $INDEX -eq 1 ]
+then
+        TYPE="exit"
+        TIME="340"
+else
+        TYPE="entrance"
+        TIME="340"
+fi
+
+mpiexec -n 512 $CARPENTRYDIR/carp.pt \
++F $PARA.par \
+-meshname $OUT/$MESH \
+-parab_options_file $OPTS/ilu_cg_opts \
+-ellip_options_file $OPTS/amg_cg_opts \
+-tend 5000 \
+-dt $DT \
+-num_tsav 1 \
+-tsav[0] 5000 \
+-tsav_ext[0] 5000.${TYPE}.${DT}dt \
+-timedt 10.0 -spacedt 10.0 \
+-simID $OUT/LF/ \
+-diffusionOn 1 \
+-num_stim 1 \
+-stimulus[0].stimtype 8 \
+-stimulus[0].data_file $OUT/VT_${TYPE}.dat \
+-start_statef $OUT/Sim/state.${TIME}.${TYPE} \
+-vofile $OUT/LF/vm_${TYPE}_LF_${TIME}_${DT}dt \
+-lead_field_ref $REF \
+-lead_field_sources $OUT/LF_electrodes \
+-lead_field_mode 0 \
+-lead_field_meth 1 \
+-lead_field_egm_file LF_${TYPE}_${TIME}_${DT}dt \
+-lead_field_dir $OUT/LF/ \
