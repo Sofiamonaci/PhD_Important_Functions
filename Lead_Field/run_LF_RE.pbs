@@ -31,11 +31,25 @@ source ${HOME}/.bashrc
 export OMP_NUM_THREADS=1
 
 OPTS="/home/sm18/NumComp/solver_opts"
-PARA="eikonal_RE+"
+
+#==================#
+# INITIALISE FILES
+#==================#
+
+OPTS="/home/sm18/NumComp/solver_opts"
+PARA="eikonal_RE+" 
+
+# Enter NAME OUTPUT FOLDER
 OUT="/scratch/sm18/Scar"
-DT="125"
-REF=$1
+
+# ENTER NAME TORSO MESH
 MESH="myo_scar"
+
+# ENTER DT
+DT="125"
+
+# ENTER REFERENCE NODE (AS AN ARGUMENT TO BASH SCRIPT IN THIS CASE)
+REF=$1
 
 INDEX=$SLURM_ARRAY_TASK_ID
 
@@ -47,6 +61,10 @@ else
         TYPE="entrance"
         TIME="340"
 fi
+
+#==================#
+# RUN JOB ON TOM2
+#==================#
 
 mpiexec -n 512 $CARPENTRYDIR/carp.pt \
 +F $PARA.par \
