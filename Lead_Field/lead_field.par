@@ -1,0 +1,125 @@
+#==============================
+# Ionic Model
+#==============================
+bidomain = 2
+
+# CHANGE THIS ACCORDING TO PRESENCE OF INFARCT OR NOT
+num_imp_regions  =  2
+
+# Ionic model for healthy  myocardium
+imp_region[0].im       = TT2 
+
+# CHANGE TAGS ACCORDINGLY 
+imp_region[0].num_IDs = 4
+imp_region[0].ID[0] = 2 
+imp_region[0].ID[1] = 4
+imp_region[0].ID[2] = 21
+imp_region[0].ID[3] = 22
+
+imp_region[1].im       = TT2 
+imp_region[1].num_IDs = 1
+imp_region[1].ID[0] = 20
+imp_region[1].im_param = "GNa*0.38"
+
+#===============================
+
+parab_solve   =     1
+cg_tol_ellip  =     1e-8 #1e-8 normally
+dt            =     25
+tend          =     250
+timedt        =     10.0
+spacedt       =     10.0
+
+#=============================
+# Conductivities
+#=============================
+
+# CHANGE TAGS ACCORDINGLY
+
+num_gregions = 13
+
+# Healthy
+gregion[0].num_IDs = 4
+gregion[0].ID[0] = 2
+gregion[0].ID[1] = 4
+gregion[0].ID[2] = 21
+gregion[0].ID[3] = 22
+gregion[0].name = Caldwell09
+gregion[0].g_il = 0.1845 #0.1969
+gregion[0].g_it = 0.0493
+gregion[0].g_in = 0.0493
+gregion[0].g_el = 0.6628 #0.7074
+gregion[0].g_et = 0.1769
+gregion[0].g_en = 0.1769
+
+
+# scarred tissue
+gregion[12].num_IDs   = 1
+gregion[12].ID[0]     = 20 # isthmus
+gregion[12].g_il      = 0.0270
+gregion[12].g_it      = 0.0270
+gregion[12].g_in      = 0.0270
+gregion[12].g_el      = 0.0993
+gregion[12].g_et      = 0.0993
+gregion[12].g_en      = 0.0993
+
+
+# fat+muscle (bath)
+gregion[1].num_IDs=     1
+gregion[1].ID[0] =      17
+gregion[1].g_bath =     0.24725 #muscle=0.4445+fat=0.05
+
+# lungs
+gregion[2].num_IDs=     1
+gregion[2].ID[0] =      9
+gregion[2].g_bath =     0.0714
+
+# liver
+gregion[3].num_IDs=      1
+gregion[3].ID[0] =      13
+gregion[3].g_bath =     0.1667 #600
+
+# bone + cartilage
+gregion[4].num_IDs=      1
+gregion[4].ID[0] =      11
+gregion[4].g_bath =     0.0500 #200
+
+# kidney
+gregion[5].num_IDs=      1
+gregion[5].ID[0] =      15
+gregion[5].g_bath =     0.1667 #600
+
+# spleen
+gregion[6].num_IDs=      1
+gregion[6].ID[0] =      14
+gregion[6].g_bath =     0.1
+
+# pericardium
+gregion[7].num_IDs=      1
+gregion[7].ID[0] =      10
+gregion[7].g_bath =     0.2
+
+# Blood (LV cavity, RV cavity) + RVOT
+gregion[8].num_IDs=      3
+gregion[8].ID[0] =      1
+gregion[8].ID[1] =      3
+gregion[8].ID[2] =      18
+gregion[8].g_bath =     0.6667
+
+# Atria Walls + Blood Pools
+gregion[9].num_IDs=      4
+gregion[9].ID[0] =      6
+gregion[9].ID[1] =      8
+gregion[9].ID[2] =      5
+gregion[9].ID[3] =      7
+gregion[9].g_bath =     0.6667
+
+# Aorta
+gregion[10].num_IDs=      1
+gregion[10].ID[0] =      12
+gregion[10].g_bath =     0.6667
+
+# Skin
+gregion[11].num_IDs=      1
+gregion[11].ID[0] =      16
+gregion[11].g_bath =     0.05
