@@ -1,0 +1,101 @@
+#==============================
+# Ionic Model
+#==============================
+bidomain = 0
+
+num_imp_regions =  1
+
+# Ionic model for healthy  myocardium
+imp_region[0].im       = TT2
+
+# CHANGE TAGS ACCORDING TO MESH OF INTEREST
+imp_region[0].num_IDs = 5
+imp_region[0].ID[0] = 26 # RV
+imp_region[0].ID[1] = 27 # LV
+imp_region[0].ID[2] = 29 # ISTHMUS
+imp_region[0].ID[3] = 30 # EXIT
+imp_region[0].ID[4] = 31 # ENTRANCE
+
+#===============================
+
+parab_solve   =     1
+cg_tol_ellip  =     1e-8
+dt            =     25
+tend          =     250
+timedt        =     10.0
+spacedt       =     10.0
+
+#=============================
+# Conductivities
+#=============================
+num_gregions = 2
+
+# Healthy
+gregion[0].num_IDs = 2
+gregion[0].ID[0] = 26
+gregion[0].ID[1] = 27
+gregion[0].name = Caldwell09 # to get 0.67 m/s, 0.3 m/s, 0.3 m/s
+gregion[0].g_il = 0.2674
+gregion[0].g_it = 0.0921
+gregion[0].g_in = 0.0921
+gregion[0].g_el = 0.9605
+gregion[0].g_et = 0.3307
+gregion[0].g_en = 0.3307
+
+gregion[1].num_IDs       = 3
+gregion[1].ID[0]         = 29 # isthmus
+gregion[1].ID[1]         = 30 # exit
+gregion[1].ID[2]         = 31 # entrance
+gregion[1].g_il          = 0.0921
+gregion[1].g_it          = 0.0921
+gregion[1].g_in          = 0.0921
+gregion[1].g_el          = 0.3307
+gregion[1].g_et          = 0.3307
+gregion[1].g_en          = 0.3307
+
+#===============================
+# LAT
+#===============================
+
+num_LATs             =         1
+lats[0].ID           =         lat
+lats[0].measurand    =         0
+lats[0].all          =         0
+lats[0].threshold    =       -70
+lats[0].method       =         1
+lats[0].mode         =         1
+===============================
+# Reaction-Eikonal
+================================
+
+# Healthy myocardium
+
+num_ekregions = 2
+
+ekregion[0].ID = 0
+ekregion[0].vel_f = 0.67
+ekregion[0].vel_s = 0.3
+ekregion[0].vel_n = 0.3
+
+# Scarred tissue
+
+ekregion[1].ID = 1
+ekregion[1].vel_f = 0.3
+ekregion[1].vel_s = 0.3
+ekregion[1].vel_n = 0.3
+
+#================================
+# Stim Type
+#================================
+
+num_stim                 = 2
+
+stimulus[0].stimtype     = 0
+stimulus[0].strength     = 2000
+stimulus[0].duration     = 2.0
+stimulus[0].start        = 0
+stimulus[0].xd           = 1000
+stimulus[0].yd           = 1000
+stimulus[0].zd           = 1000
+
+stimulus[1].stimtype     = 8
