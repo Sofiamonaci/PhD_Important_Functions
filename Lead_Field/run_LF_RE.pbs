@@ -19,7 +19,7 @@
 # where NODE is the index reference node used in lead_field.pbs
 #
 # Make sure that you have:
-# - eikonal_RE+.par 
+# - eikonal.par (same as for run_RE.pbs) 
 # - Activation time files in the output folder named VT_entrance.dat and/or VT_exit.dat, as in run_LF.pbs
 # - check that run_LF.pbs has run and you have state.(..).roe files in $OUT/Sim/
 # - LF_electrodes.vtx in this folder (as for lead_field.pbs)
