@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+#SBATCH -p compute
+#SBATCH -J lead_field
+#SBATCH -t 0-20:00:00
+#SBATCH --output=LF_%A.out
+#SBATCH --error=LF_%A.err
+#SBATCH --nodes=8
+#SBATCH --ntasks-per-node=64
+
+#==================#
+# COMPUTE LEAD FIELDS
+#==================#
+
+# NOTES
+# run script as follows
+# sbatch lead_field.pbs $NODE
+# where NODE is the index of the reference node
+#
+# Make sure that you have:
+# lead_field.par
+# LF_electrodes.vtx
+# in this folder
+
+
+source ${HOME}/.bashrc
+export OMP_NUM_THREADS=1
+
+#==================#
+# INITIALISE FILES
+#==================#
+
+OPTS="/home/sm18/NumComp/solver_opts"
+PARA="lead_field.par"
+
+# Enter NAME OUTPUT FOLDER
+OUT="/scratch/sm18/Scar"
+
+# ENTER INDEX OF REFERENCE NODE USED AS GROUND FOR LF COMPUTATIONS
+REF=$1
+# ENTER NAME TORSO MESH
+MESH="Torso_scar"
+
+echo "Reference node: $REF"
+
+#======================#
+# RUN SCRIPT ON TOM2   #
+#======================#
+
+mpiexec -np 512 $CARPENTRYDIR/carp.pt \
++F $PARA \
+-meshname $OUT/$MESH \
+-parab_options_file $OPTS/ilu_cg_opts \
+-ellip_options_file $OPTS/amg_cg_opts_new \
+-floating_ground 1 \
+-tend 25 \
+-dt 25 \
+-num_stim 0 \
+-experiment 9 \
+-lead_field_ref $REF \
+-lead_field_sources LF_electrodes \
+-lead_field_mode 0 \
+-lead_field_meth 1 \
+-dump_lead_fields 1 \
+-timedt 10.0 -spacedt 10.0 \
+-simID $OUT/LF/ \
