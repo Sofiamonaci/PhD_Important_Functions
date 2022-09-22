@@ -9,24 +9,55 @@
 #SBATCH --error=RE_%a.err
 #SBATCH --array=[1-2]%1
 
+#=========================================================================#
+# RUN RE with no diffusion to get first VT cycle given an activation file
+#=========================================================================#
+
+# NOTES
+# run script as follows
+# sbatch run_RE.pbs 
+#
+# Make sure that you have:
+# - eikonal_entrance.par and/or eikonal_exit.par in this folder
+# - Activation time files in the output folder named VT_entrance.dat and/or VT_exit.dat
+#
+# THIS SCRIPT WAS DESIGNED to induce VT from exit and entrance of an idealised scar. If only 
+# one simulation is desired, just names of parameter .par files, and activation .dat files
+
+
 source ${HOME}/.bashrc
 export OMP_NUM_THREADS=1
 
-OUT="/scratch/sm18/Scar"
+#==================#
+# INITIALISE FILES
+#==================#
+
 OPTS="/home/sm18/NumComp/solver_opts"
-PARA="eikonal"
+PARA="eikonal" 
+
+# Enter NAME OUTPUT FOLDER
+OUT="/scratch/sm18/Scar"
+
+# ENTER NAME TORSO MESH
 MESH="myo_scar"
+
+# IF RUNNING JUST ONE RE- change job array to single job and modify the following lines
+# together with name of eikonal_entrance.par and eikonal_exit.par
+
 INDEX=$SLURM_ARRAY_TASK_ID
 
 if [ $INDEX -eq 1 ]
 then
         TYPE="exit"
-        TIME="300"
+        TIME="300" # this script saves vm checkpoint at a bunch of times
 else
         TYPE="entrance"
         TIME="300"
 fi
 
+#======================#
+# RUN SCRIPT ON TOM2   #
+#======================#
 
 mpiexec -n 512 $CARPENTRYDIR/carp.pt \
 +F $PARA.par \
