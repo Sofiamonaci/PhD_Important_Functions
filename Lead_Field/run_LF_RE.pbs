@@ -9,11 +9,29 @@
 #SBATCH --error=VT_%a.err
 #SBATCH --array=[1-2]%1
 
+#=========================================================================#
+# RUN LF-RE with diffusion to multiple sustained, monomorphic VT cycles
+#=========================================================================#
+
+# NOTES
+# run script as follows
+# sbatch run_LF_RE.pbs $NODE
+# where NODE is the index reference node used in lead_field.pbs
+#
+# Make sure that you have:
+# - eikonal_RE+.par 
+# - Activation time files in the output folder named VT_entrance.dat and/or VT_exit.dat, as in run_LF.pbs
+# - check that run_LF.pbs has run and you have state.(..).roe files in $OUT/Sim/
+# - LF_electrodes.vtx in this folder (as for lead_field.pbs)
+#
+# THIS SCRIPT WAS DESIGNED to get multiple cycles of VTs from exit and entrance of an idealised scar. If only 
+# one simulation is desired, just names of files accordingly and type of job (from array to single)
+
 source ${HOME}/.bashrc
 export OMP_NUM_THREADS=1
 
 OPTS="/home/sm18/NumComp/solver_opts"
-PARA="eikonal"
+PARA="eikonal_RE+"
 OUT="/scratch/sm18/Scar"
 DT="125"
 REF=$1
@@ -49,7 +67,7 @@ mpiexec -n 512 $CARPENTRYDIR/carp.pt \
 -start_statef $OUT/Sim/state.${TIME}.${TYPE} \
 -vofile $OUT/LF/vm_${TYPE}_LF_${TIME}_${DT}dt \
 -lead_field_ref $REF \
--lead_field_sources $OUT/LF_electrodes \
+-lead_field_sources LF_electrodes \
 -lead_field_mode 0 \
 -lead_field_meth 1 \
 -lead_field_egm_file LF_${TYPE}_${TIME}_${DT}dt \
