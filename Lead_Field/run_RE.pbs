@@ -18,11 +18,11 @@
 # sbatch run_RE.pbs 
 #
 # Make sure that you have:
-# - eikonal_entrance.par and/or eikonal_exit.par in this folder
+# - eikonal.par
 # - Activation time files in the output folder named VT_entrance.dat and/or VT_exit.dat
 #
 # THIS SCRIPT WAS DESIGNED to induce VT from exit and entrance of an idealised scar. If only 
-# one simulation is desired, just names of parameter .par files, and activation .dat files
+# one simulation is desired, just change activation .dat files and type of job (array to single)
 
 
 source ${HOME}/.bashrc
