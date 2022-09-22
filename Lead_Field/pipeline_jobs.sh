@@ -29,7 +29,7 @@ JOB2=$(sbatch --dependency=afterok:${JOB1##* } lead_field.pbs $REF)
 
 # Running LF-RE
 echo "Running LF as dependency of previous jobs"
-JOB3=$(sbatch --dependency=afterok:${JOB1##* }:${JOB2##* } run_LF.pbs $REF)
+JOB3=$(sbatch --dependency=afterok:${JOB1##* }:${JOB2##* } run_LF_RE.pbs $REF)
 
 echo "Job1: ${JOB1##* }"
 echo "Job2: ${JOB2##* }"
