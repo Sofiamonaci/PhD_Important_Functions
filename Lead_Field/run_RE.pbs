@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#SBATCH -p compute
+#SBATCH -J RE
+#SBATCH -t 0-10:00:00
+#SBATCH --nodes=8
+#SBATCH --ntasks-per-node=64
+#SBATCH --output=RE_%a.out
+#SBATCH --error=RE_%a.err
+#SBATCH --array=[1-2]%1
+
+source ${HOME}/.bashrc
+export OMP_NUM_THREADS=1
+
+OUT="/scratch/sm18/Scar"
+OPTS="/home/sm18/NumComp/solver_opts"
+PARA="eikonal"
+MESH="myo_scar"
+INDEX=$SLURM_ARRAY_TASK_ID
+
+if [ $INDEX -eq 1 ]
+then
+        TYPE="exit"
+        TIME="300"
+else
+        TYPE="entrance"
+        TIME="300"
+fi
+
+
+mpiexec -n 512 $CARPENTRYDIR/carp.pt \
++F $PARA.par \
+-meshname $OUT/$MESH \
+-parab_options_file $OPTS/ilu_cg_opts \
+-ellip_options_file $OPTS/amg_cg_opts \
+-tend 380 \
+-dt 25 \
+-timedt 10.0 -spacedt 10.0 \
+-simID $OUT/Sim/ \
+-diffusionOn 0 \
+-num_tsav 3 \
+-tsav[0] 325 \
+-tsav_ext[0] 325.${TYPE} \
+-tsav[1] 340 \
+-tsav_ext[1] 340.${TYPE} \
+-tsav[2] $TIME \
+-tsav_ext[2] $TIME.${TYPE} \
+-num_stim 1 \
+-stimulus[0].stimtype 8 \
+-stimulus[0].npls 1 \
+-stimulus[0].data_file $OUT/VT_${TYPE}.dat \
+-experiment 0 \
+-vofile $OUT/Sim/vm_${TYPE}_RE- \
