@@ -1,0 +1,23 @@
+These files were utilised to induce two different VT episodes from a simplistic scar (two regions of dead tissue framing an isthmus of slow conduction).
+However, they can be used as examples to run leads fields on TOM2 and compute ECGs and/or EGMs.
+
+
+For fast VT induction
+
+you can simply run
+./pipeline_jobs.sh
+on TOM2 after making sure that each file has the correct variables initialised (look inside each file for more instructions).
+Briefly, the shell script allows to
+1. Compute leads fields on points of interest in a torso mesh specified in LF_electrodes.vtx -------- lead_field.pbs and lead_field.par
+2. Run a RE- (no diffusion) on the extracted myocardial mesh to get a first VT cycle for two different activation time maps 
+(.dat previously generated with ekbatch) -------- run_RE.pbs and eikonal.par
+3. Combine lead fields and RE+ (with diffusion) to generate multiple VT cycles ----- run_LF_RE.pbs and eikonal.par 
+
+Step 1. and 2. can be run in any order as indepedent of one another. Step 3. needs to run after BOTH Step 1. and 2. have completed.
+
+
+For LF-RE environment in general
+
+1. Run lead_field.pbs after changing LF_electrodes.vtx according to points of interest, lead_field.par according to tags of cardiac and torso meshes (and also make sure that you change
+- name of MESH in lead_field.pbs
+- 
